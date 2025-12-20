@@ -1,0 +1,25 @@
+{
+  "syncVersion": "2.0",
+  "autoSync": true,
+  "syncInterval": 5000,
+  "conflictResolution": "local-first",
+  "ignorePaths": [
+    "node_modules/**",
+    ".git/**",
+    "dist/**",
+    ".env",
+    ".env.local",
+    "*.log"
+  ],
+  "syncPaths": [
+    "src/**",
+    "public/**",
+    "index.html",
+    "package.json",
+    "tsconfig.json",
+    "vite.config.ts",
+    "tailwind.config.ts"
+  ],
+  "preserveLocal": true,
+  "mergeStrategy": "manual"
+}

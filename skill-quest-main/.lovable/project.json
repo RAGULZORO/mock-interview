@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "projectId": "skill-quest",
+  "projectName": "PREPMASTER - Skill Quest",
+  "description": "Master placement exams with PREPMASTER",
+  "type": "react-vite",
+  "framework": "React",
+  "buildTool": "Vite",
+  "typescript": true,
+  "styling": {
+    "framework": "tailwindcss",
+    "ui-library": "shadcn/ui"
+  },
+  "integrations": {
+    "supabase": true,
+    "auth": true
+  },
+  "lastSync": "2025-12-20T00:00:00Z",
+  "syncEnabled": true
+}

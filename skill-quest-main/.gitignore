@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Lovable sync files
+.lovable/editor-state.json
+.lovable/sync-cache.json
+.lovable/.lovable-sync-log
+.lovable-sync-lock
