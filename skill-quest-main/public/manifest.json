@@ -1,0 +1,71 @@
+{
+  "name": "PREPMASTER - Ace Your Interviews",
+  "short_name": "PREPMASTER",
+  "description": "Master placement exams with PREPMASTER - practice aptitude, technical, and group discussion rounds",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e293b",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "screenshots": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "540x720",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Aptitude",
+      "short_name": "Aptitude",
+      "description": "Practice Aptitude Questions",
+      "url": "/aptitude",
+      "icons": [
+        {
+          "src": "/favicon.svg",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Technical",
+      "short_name": "Technical",
+      "description": "Practice Technical Problems",
+      "url": "/technical",
+      "icons": [
+        {
+          "src": "/favicon.svg",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Group Discussion",
+      "short_name": "GD",
+      "description": "Group Discussion Topics",
+      "url": "/group-discussion",
+      "icons": [
+        {
+          "src": "/favicon.svg",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "buildSystem": "vite",
+  "buildCommand": "vite build",
+  "devCommand": "vite",
+  "previewCommand": "vite preview",
+  "buildOutput": "dist",
+  "sourceRoot": "src",
+  "publicRoot": "public",
+  "optimization": {
+    "minify": true,
+    "sourceMaps": true,
+    "splitChunks": true
+  },
+  "environmentVariables": {
+    "VITE_SUPABASE_URL": "",
+    "VITE_SUPABASE_ANON_KEY": ""
+  }
+}
