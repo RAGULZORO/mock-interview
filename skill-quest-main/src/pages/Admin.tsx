@@ -111,48 +111,51 @@ const Admin = () => {
   const fetchUserProgress = async () => {
     setLoadingProgress(true);
     try {
-      const { data: users, error: usersError } = await supabase
-        .from('user_progress')
-        .select('user_id')
-        .then(async (result) => {
-          if (result.error) return result;
-          // Get unique user IDs
-          const userIds = [...new Set((result.data || []).map((p: any) => p.user_id))];
-          
-          // Fetch user details from profiles table
-          const { data: profiles, error: profilesError } = await supabase
-            .from('profiles')
-            .select('*')
-            .in('id', userIds);
+      // Fetch all user profiles (admins can see all profiles with the new RLS policy)
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-          return { data: profiles, error: profilesError };
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+        toast({ 
+          title: 'Error', 
+          description: `Failed to load user profiles: ${profilesError.message}`, 
+          variant: 'destructive' 
         });
+        setLoadingProgress(false);
+        return;
+      }
 
-      if (usersError || !users) {
-        console.error('Error fetching users:', usersError);
+      if (!profiles || profiles.length === 0) {
+        setUserProgressData([]);
         setLoadingProgress(false);
         return;
       }
 
       // Fetch progress for each user
       const userProgressList = await Promise.all(
-        users.map(async (user: any) => {
+        profiles.map(async (user: any) => {
+          // Use user_id from profiles table, not id
+          const userId = user.user_id || user.id;
+          
           const { data: aptitudeProgress } = await supabase
             .from('user_progress')
             .select('*')
-            .eq('user_id', user.id)
+            .eq('user_id', userId)
             .eq('question_type', 'aptitude');
 
           const { data: technicalProgress } = await supabase
             .from('user_progress')
             .select('*')
-            .eq('user_id', user.id)
+            .eq('user_id', userId)
             .eq('question_type', 'technical');
 
           const { data: gdProgress } = await supabase
             .from('user_progress')
             .select('*')
-            .eq('user_id', user.id)
+            .eq('user_id', userId)
             .eq('question_type', 'gd');
 
           const aptitudeCorrect = aptitudeProgress?.filter((p: any) => p.is_correct).length || 0;
@@ -172,7 +175,7 @@ const Admin = () => {
             : 0;
 
           return {
-            id: user.id,
+            id: userId,
             email: user.email || 'Unknown',
             name: user.full_name || user.email || 'Unknown User',
             aptitude: {
@@ -195,9 +198,13 @@ const Admin = () => {
       );
 
       setUserProgressData(userProgressList);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching user progress:', error);
-      toast({ title: 'Error', description: 'Failed to load user progress', variant: 'destructive' });
+      toast({ 
+        title: 'Error', 
+        description: `Failed to load user progress: ${error?.message || 'Unknown error'}`, 
+        variant: 'destructive' 
+      });
     }
     setLoadingProgress(false);
   };

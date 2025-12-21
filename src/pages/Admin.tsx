@@ -111,93 +111,99 @@ const Admin = () => {
   const fetchUserProgress = async () => {
     setLoadingProgress(true);
     try {
-      const { data: users, error: usersError } = await supabase
-        .from('user_progress')
-        .select('user_id')
-        .then(async (result) => {
-          if (result.error) return result;
-          // Get unique user IDs
-          const userIds = [...new Set((result.data || []).map((p: any) => p.user_id))];
-          
-          // Fetch user details from profiles table
-          const { data: profiles, error: profilesError } = await supabase
-            .from('profiles')
-            .select('*')
-            .in('id', userIds);
+      // Fetch all user profiles (admins can see all profiles with the new RLS policy)
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-          return { data: profiles, error: profilesError };
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+        toast({ 
+          title: 'Error', 
+          description: `Failed to load user profiles: ${profilesError.message}`, 
+          variant: 'destructive' 
         });
-
-      if (usersError || !users) {
-        console.error('Error fetching users:', usersError);
         setLoadingProgress(false);
         return;
       }
 
-      // Fetch progress for each user
-      const userProgressList = await Promise.all(
-        users.map(async (user: any) => {
-          const { data: aptitudeProgress } = await supabase
-            .from('user_progress')
-            .select('*')
-            .eq('user_id', user.id)
-            .eq('question_type', 'aptitude');
+      if (!profiles || profiles.length === 0) {
+        setUserProgressData([]);
+        setLoadingProgress(false);
+        return;
+      }
 
-          const { data: technicalProgress } = await supabase
-            .from('user_progress')
-            .select('*')
-            .eq('user_id', user.id)
-            .eq('question_type', 'technical');
+      // Fetch progress for each user. Capture and surface errors from the individual queries
+      console.debug('Admin: fetched profiles count=', profiles.length);
 
-          const { data: gdProgress } = await supabase
-            .from('user_progress')
-            .select('*')
-            .eq('user_id', user.id)
-            .eq('question_type', 'gd');
+      // Fetch all user_progress rows in one go and aggregate per user. This reduces the number
+      // of round-trips and surfaces a single permission error if RLS blocks access.
+      const { data: allProgress, error: allProgressError } = await supabase
+        .from('user_progress')
+        .select('*');
 
-          const aptitudeCorrect = aptitudeProgress?.filter((p: any) => p.is_correct).length || 0;
-          const technicalCorrect = technicalProgress?.filter((p: any) => p.is_correct).length || 0;
-          const gdCorrect = gdProgress?.filter((p: any) => p.is_correct).length || 0;
+      if (allProgressError) {
+        console.error('Error fetching user_progress rows:', allProgressError);
+        toast({ title: 'Error', description: `Failed to fetch user progress: ${allProgressError.message}`, variant: 'destructive' });
+        // Keep going with empty progress list so UI shows the error state
+      }
 
-          const aptitudeAccuracy = aptitudeProgress && aptitudeProgress.length > 0
-            ? Math.round((aptitudeCorrect / aptitudeProgress.length) * 100)
-            : 0;
+      const progressRows = allProgress || [];
+      // Build map: user_id -> rows[]
+      const progressByUser: Record<string, any[]> = progressRows.reduce((acc: Record<string, any[]>, row: any) => {
+        if (!acc[row.user_id]) acc[row.user_id] = [];
+        acc[row.user_id].push(row);
+        return acc;
+      }, {} as Record<string, any[]>);
 
-          const technicalAccuracy = technicalProgress && technicalProgress.length > 0
-            ? Math.round((technicalCorrect / technicalProgress.length) * 100)
-            : 0;
+      const userProgressList = profiles.map((user: any) => {
+        const userId = user.user_id || user.id;
+        const rows = progressByUser[userId] || [];
 
-          const gdAccuracy = gdProgress && gdProgress.length > 0
-            ? Math.round((gdCorrect / gdProgress.length) * 100)
-            : 0;
+        const aptitudeProgress = rows.filter((r: any) => r.question_type === 'aptitude');
+        const technicalProgress = rows.filter((r: any) => r.question_type === 'technical');
+        const gdProgress = rows.filter((r: any) => r.question_type === 'gd');
 
-          return {
-            id: user.id,
-            email: user.email || 'Unknown',
-            name: user.full_name || user.email || 'Unknown User',
-            aptitude: {
-              attempted: aptitudeProgress?.length || 0,
-              correct: aptitudeCorrect,
-              accuracy: aptitudeAccuracy
-            },
-            technical: {
-              attempted: technicalProgress?.length || 0,
-              correct: technicalCorrect,
-              accuracy: technicalAccuracy
-            },
-            gd: {
-              attempted: gdProgress?.length || 0,
-              correct: gdCorrect,
-              accuracy: gdAccuracy
-            }
-          };
-        })
-      );
+        const aptitudeCorrect = aptitudeProgress.filter((p: any) => p.is_correct).length || 0;
+        const technicalCorrect = technicalProgress.filter((p: any) => p.is_correct).length || 0;
+        const gdCorrect = gdProgress.filter((p: any) => p.is_correct).length || 0;
 
+        const aptitudeAccuracy = aptitudeProgress.length > 0 ? Math.round((aptitudeCorrect / aptitudeProgress.length) * 100) : 0;
+        const technicalAccuracy = technicalProgress.length > 0 ? Math.round((technicalCorrect / technicalProgress.length) * 100) : 0;
+        const gdAccuracy = gdProgress.length > 0 ? Math.round((gdCorrect / gdProgress.length) * 100) : 0;
+
+        return {
+          id: userId,
+          email: user.email || 'Unknown',
+          name: user.full_name || user.email || 'Unknown User',
+          aptitude: {
+            attempted: aptitudeProgress.length || 0,
+            correct: aptitudeCorrect,
+            accuracy: aptitudeAccuracy
+          },
+          technical: {
+            attempted: technicalProgress.length || 0,
+            correct: technicalCorrect,
+            accuracy: technicalAccuracy
+          },
+          gd: {
+            attempted: gdProgress.length || 0,
+            correct: gdCorrect,
+            accuracy: gdAccuracy
+          }
+        };
+      });
+
+      console.debug('Admin: assembled userProgressList count=', userProgressList.length);
       setUserProgressData(userProgressList);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching user progress:', error);
-      toast({ title: 'Error', description: 'Failed to load user progress', variant: 'destructive' });
+      toast({ 
+        title: 'Error', 
+        description: `Failed to load user progress: ${error?.message || 'Unknown error'}`, 
+        variant: 'destructive' 
+      });
     }
     setLoadingProgress(false);
   };
@@ -1413,6 +1419,63 @@ const Admin = () => {
                           <div>
                             <Label>Description</Label>
                             <Textarea value={editTechnicalForm?.description} onChange={(e) => setEditTechnicalForm(prev => ({ ...prev, description: e.target.value }))} rows={3} />
+                          </div>
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <Label>Examples</Label>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setEditTechnicalForm((prev: any) => ({ ...prev, examples: [...(prev?.examples || []), { input: '', output: '', explanation: '' }] }))}
+                              >
+                                <Plus className="h-4 w-4 mr-1" /> Add Example
+                              </Button>
+                            </div>
+                            {(editTechnicalForm?.examples || []).map((example: any, index: number) => (
+                              <div key={index} className="p-4 border border-border rounded-lg space-y-3">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-sm font-medium">Example {index + 1}</span>
+                                  {index > 0 && (
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => setEditTechnicalForm((prev: any) => ({ ...prev, examples: prev.examples.filter((_: any, i: number) => i !== index) }))}
+                                    >
+                                      <Trash2 className="h-4 w-4 text-destructive" />
+                                    </Button>
+                                  )}
+                                </div>
+                                <Input
+                                  value={example.input}
+                                  onChange={(e) => {
+                                    const newExamples = [...(editTechnicalForm?.examples || [])];
+                                    newExamples[index].input = e.target.value;
+                                    setEditTechnicalForm((prev: any) => ({ ...prev, examples: newExamples }));
+                                  }}
+                                  placeholder="Input"
+                                />
+                                <Input
+                                  value={example.output}
+                                  onChange={(e) => {
+                                    const newExamples = [...(editTechnicalForm?.examples || [])];
+                                    newExamples[index].output = e.target.value;
+                                    setEditTechnicalForm((prev: any) => ({ ...prev, examples: newExamples }));
+                                  }}
+                                  placeholder="Output"
+                                />
+                                <Input
+                                  value={example.explanation}
+                                  onChange={(e) => {
+                                    const newExamples = [...(editTechnicalForm?.examples || [])];
+                                    newExamples[index].explanation = e.target.value;
+                                    setEditTechnicalForm((prev: any) => ({ ...prev, examples: newExamples }));
+                                  }}
+                                  placeholder="Explanation (optional)"
+                                />
+                              </div>
+                            ))}
                           </div>
                           <div>
                             <Label>Solution</Label>

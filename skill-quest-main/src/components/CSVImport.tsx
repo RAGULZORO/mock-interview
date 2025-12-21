@@ -45,10 +45,10 @@ Logical Reasoning,2,If A=1 B=2 C=3... Z=26 then M=?,10,11,12,13,2,M is the 13th 
 Verbal Ability,1,Select the correct spelling,Occassion,Occasion,Ocasion,Occassoin,1,Occasion is spelled with two c's and one s`;
 
       case 'technical':
-        return `title,category,difficulty,level,description,solution,approach
-Two Sum,Arrays,Easy,1,"Given an array of integers nums and an integer target, return indices of the two numbers.","return [i, j]","Use hash map to store values, O(n) time"
-Reverse String,Strings,Easy,1,"Write a function that reverses a string","s = s[::-1]","Can use two pointers or built-in reverse"
-Merge Sorted Arrays,Arrays,Medium,2,"Merge two sorted arrays without extra space","Use two pointers from end","Compare and place larger elements at the end"`;
+  return `title,category,difficulty,level,description,examples,solution,approach
+Two Sum,Arrays,Easy,1,"Given an array of integers nums and an integer target, return indices of the two numbers.","[{\"input\":\"nums=[2,7,11,15], target=9\",\"output\":\"[0,1]\",\"explanation\":\"2+7=9\"}]","return [i, j]","Use hash map to store values, O(n) time"
+Reverse String,Strings,Easy,1,"Write a function that reverses a string","[{\"input\":\"hello\",\"output\":\"olleh\",\"explanation\":\"Reverse characters\"}]","s = s[::-1]","Can use two pointers or built-in reverse"
+Merge Sorted Arrays,Arrays,Medium,2,"Merge two sorted arrays without extra space","[{\"input\":\"[1,3,5] and [2,4,6]\",\"output\":\"[1,2,3,4,5,6]\",\"explanation\":\"Place larger from end\"}]","Use two pointers from end","Compare and place larger elements at the end"`;
 
       case 'gd':
         return `title,category,level,description,points_for,points_against,conclusion
@@ -254,7 +254,7 @@ Remote Work,Business,1,"Should companies promote remote work?","Better work-life
   const getTechnicalFormatInfo = () => {
     if (type !== 'technical') return null;
     return {
-      columns: ['title', 'category', 'difficulty', 'level', 'description', 'solution', 'approach'],
+      columns: ['title', 'category', 'difficulty', 'level', 'description', 'examples', 'solution', 'approach'],
       categories: ['Arrays', 'Strings', 'Linked Lists', 'Trees', 'Graphs', 'Dynamic Programming', 'Sorting', 'Searching'],
       difficulties: ['Easy', 'Medium', 'Hard'],
       levels: ['1', '2', '3', '4']
@@ -632,6 +632,16 @@ Remote Work,Business,1,"Should companies promote remote work?","Better work-life
                   <li><strong className="text-foreground">Template:</strong> Always download the template first to ensure correct format</li>
                   <li><strong className="text-foreground">Limit:</strong> Maximum 100 questions per import for optimal performance</li>
                 </ul>
+                {type === 'technical' && (
+                  <div className="text-sm text-muted-foreground pt-2">
+                    <p className="font-medium text-foreground mb-1">Examples column format</p>
+                    <p>
+                      For technical questions the <code className="bg-background px-1 py-0.5 rounded text-xs">examples</code> column should contain a JSON array of example objects. Example:
+                    </p>
+                    <pre className="bg-background p-2 rounded text-xs mt-2 overflow-auto">{`[{"input":"nums=[2,7,11,15], target=9","output":"[0,1]","explanation":"2+7=9"}]`}</pre>
+                    <p className="text-xs text-muted-foreground mt-2">Wrap the entire JSON string in quotes if it contains commas. If examples are not provided a blank array will be stored.</p>
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
