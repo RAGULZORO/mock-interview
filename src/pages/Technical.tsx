@@ -358,7 +358,7 @@ const Technical = () => {
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-secondary flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--secondary)' }}>
               <Code className="w-5 h-5 text-primary-foreground" />
             </div>
             <span className="text-lg font-bold text-foreground">Technical Round</span>
@@ -387,7 +387,7 @@ const Technical = () => {
                   onClick={() => setSelectedCategory(cat.id)}
                   className="group bg-card rounded-2xl shadow-card border border-border p-6 text-center hover:border-secondary/50 hover:shadow-lg transition-all"
                 >
-                  <div className="w-14 h-14 mx-auto rounded-xl bg-secondary/10 flex items-center justify-center mb-4 group-hover:bg-secondary/20 transition-colors">
+                  <div className="w-14 h-14 mx-auto rounded-xl flex items-center justify-center mb-4 transition-colors" style={{ backgroundColor: 'rgba(75,85,99,0.08)' }}>
                     <cat.icon className="w-7 h-7 text-secondary" />
                   </div>
                   <h3 className="font-semibold text-foreground">{cat.name}</h3>

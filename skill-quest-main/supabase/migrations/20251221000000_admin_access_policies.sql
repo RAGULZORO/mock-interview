@@ -12,3 +12,4 @@ ON public.profiles
 FOR SELECT
 USING (public.has_role(auth.uid(), 'admin'));
 
+

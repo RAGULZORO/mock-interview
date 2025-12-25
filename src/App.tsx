@@ -12,7 +12,9 @@ import Aptitude from "./pages/Aptitude";
 import Technical from "./pages/Technical";
 import GroupDiscussion from "./pages/GroupDiscussion";
 import Admin from "./pages/Admin";
+import AdminMockTests from "./pages/AdminMockTests";
 import NotFound from "./pages/NotFound";
+import MockTest from "./pages/MockTest";
 
 const queryClient = new QueryClient();
 
@@ -97,10 +99,26 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/mock-test"
+        element={
+          <ProtectedRoute>
+            <MockTest />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/admin"
         element={
           <AdminRoute>
             <Admin />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/mock-tests"
+        element={
+          <AdminRoute>
+            <AdminMockTests />
           </AdminRoute>
         }
       />

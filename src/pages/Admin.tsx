@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Brain, Code, Users, Plus, Trash2, Save, AlertCircle, CheckCircle2, TrendingUp, BarChart3, Search } from 'lucide-react';
+import { ArrowLeft, Brain, Code, Users, Plus, Trash2, Save, AlertCircle, CheckCircle2, TrendingUp, BarChart3, Search, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -660,6 +660,10 @@ const Admin = () => {
             <TabsTrigger value="import-gd" className="flex items-center gap-1 text-xs whitespace-nowrap">
               <Plus className="h-3 w-3" />
               <span>Import GD</span>
+            </TabsTrigger>
+            <TabsTrigger value="mock-tests" className="flex items-center gap-2 whitespace-nowrap">
+              <Clock className="h-4 w-4" />
+              <span className="hidden sm:inline">Mock Tests</span>
             </TabsTrigger>
             <TabsTrigger value="progress" className="flex items-center gap-2 whitespace-nowrap">
               <BarChart3 className="h-4 w-4" />
@@ -1633,6 +1637,24 @@ const Admin = () => {
               type="gd"
               onCountsUpdated={fetchGdQuestionCounts}
             />
+          </TabsContent>
+
+          {/* Mock Tests admin quick link */}
+          <TabsContent value="mock-tests">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-primary" />
+                  Mock Tests Admin
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">Open the dedicated Mock Tests admin editor to add, edit, or delete mock test questions and topics.</p>
+                <div className="flex gap-2">
+                  <Button onClick={() => navigate('/admin/mock-tests')}>Open Mock Tests Editor</Button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* User Progress Tab */}
