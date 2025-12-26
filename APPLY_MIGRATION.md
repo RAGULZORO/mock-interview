@@ -51,4 +51,3 @@ USING (public.has_role(auth.uid(), 'admin'));
 4. Click "Load User Progress"
 5. You should now see all users and their progress!
 
-

@@ -94,15 +94,6 @@ const Dashboard = () => {
       stats: '100+ Topics',
       path: '/group-discussion',
     },
-    {
-      id: 'mock-test',
-      title: 'Mock Tests',
-      description: 'Timed mock tests with saved progress and results',
-      icon: Clock,
-      color: 'from-primary to-secondary',
-      stats: 'Timed Sessions',
-      path: '/mock-test',
-    },
   ];
 
   const quickStats = [
@@ -114,11 +105,11 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-card">
+      <header className="sticky top-0 z-50 glass border-b border-border">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--secondary)' }}>
-              <Brain className="w-6 h-6" style={{ color: 'var(--primary)' }} />
+            <div className="w-10 h-10 rounded-xl bg-gradient-hero flex items-center justify-center">
+              <Brain className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-foreground">PrepMaster</span>
           </div>
@@ -126,18 +117,18 @@ const Dashboard = () => {
           <div className="flex items-center gap-4">
             {isAdmin && (
               <Button 
-                variant="secondary" 
+                variant="outline" 
                 size="sm"
                 onClick={() => navigate('/admin')}
-                className="hidden sm:flex items-center gap-2 text-primary hover:text-primary"
+                className="hidden sm:flex items-center gap-2"
               >
                 <Settings className="w-4 h-4" />
                 Admin
               </Button>
             )}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary text-primary">
-              <User className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted">
+              <User className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-foreground font-medium">
                 {user?.email?.split('@')[0]}
               </span>
             </div>
@@ -145,7 +136,7 @@ const Dashboard = () => {
               variant="ghost" 
               size="icon"
               onClick={handleSignOut}
-              className="text-primary hover:text-primary"
+              className="text-muted-foreground hover:text-foreground"
             >
               <LogOut className="w-5 h-5" />
             </Button>
@@ -155,23 +146,23 @@ const Dashboard = () => {
 
       {/* Hero Section */}
       <section className="relative py-12 md:py-20 overflow-hidden">
-  <div className="absolute inset-0" style={{ backgroundColor: 'rgba(37,99,235,0.03)' }}></div>
-  <div className="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl" style={{ backgroundColor: 'rgba(37,99,235,0.06)' }}></div>
-  <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full blur-3xl" style={{ backgroundColor: 'rgba(75,85,99,0.04)' }}></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
         
         <div className="container mx-auto px-4 relative">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6 animate-fade-in" style={{ backgroundColor: 'rgba(37,99,235,0.06)', color: 'var(--primary)' }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 animate-fade-in">
               <Sparkles className="w-4 h-4" />
               Welcome back, {user?.email?.split('@')[0]}!
             </div>
             
             <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4 animate-slide-up">
               Ready to ace your
-              <span className="block mt-1" style={{ color: 'var(--primary)' }}>next interview?</span>
+              <span className="text-gradient block mt-1">next interview?</span>
             </h1>
-
-            <p className="text-lg" style={{ color: 'var(--muted-foreground)', marginBottom: '2rem' }}>
+            
+            <p className="text-lg text-muted-foreground mb-8 animate-slide-up" style={{ animationDelay: '0.1s' }}>
               Practice aptitude tests, coding challenges, and group discussions 
               to prepare for your dream job.
             </p>
@@ -214,18 +205,8 @@ const Dashboard = () => {
                 className="group relative bg-card rounded-3xl p-6 text-left shadow-card border border-border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-slide-up"
                 style={{ animationDelay: `${idx * 0.1}s` }}
               >
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
-                  style={{
-                    backgroundColor:
-                      category.id === 'aptitude'
-                        ? 'rgba(37,99,235,0.06)'
-                        : category.id === 'technical'
-                        ? 'rgba(75,85,99,0.06)'
-                        : 'rgba(37,99,235,0.04)',
-                  }}
-                >
-                  <category.icon className="w-7 h-7" style={{ color: 'var(--primary)' }} />
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <category.icon className="w-7 h-7 text-primary-foreground" />
                 </div>
 
                 <h3 className="text-xl font-semibold text-foreground mb-2">
@@ -236,13 +217,38 @@ const Dashboard = () => {
                 </p>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(37,99,235,0.06)', color: 'var(--primary)' }}>
+                  <span className="text-xs font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
                     {category.stats}
                   </span>
                   <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                 </div>
               </button>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-12 md:py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto bg-gradient-hero rounded-3xl p-8 md:p-12 text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.1%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+            
+            <div className="relative">
+              <h3 className="text-2xl md:text-3xl font-bold text-primary-foreground mb-3">
+                Start Your Preparation Today
+              </h3>
+              <p className="text-primary-foreground/80 mb-6 max-w-md mx-auto">
+                Join thousands of candidates who have successfully cracked their interviews using PrepMaster.
+              </p>
+              <Button 
+                onClick={() => navigate('/aptitude')}
+                className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold px-8"
+              >
+                Begin Practice
+                <ChevronRight className="ml-2 w-5 h-5" />
+              </Button>
+            </div>
           </div>
         </div>
       </section>

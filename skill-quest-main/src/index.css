@@ -6,61 +6,65 @@
 
 @layer base {
   :root {
-    /* User minimal palette (hex) */
-    --bg: #ffffff;
-    --surface: #f8f9fa;
-    --text-primary: #111827;
-    --text-secondary: #6b7280;
-    --border: #e5e7eb;
-    --accent: #2563eb;
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
 
-    /* Map to existing variable names used throughout the app */
-    --background: var(--bg);
-    --foreground: var(--text-primary);
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --card: var(--surface);
-    --card-foreground: var(--text-primary);
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --popover: var(--surface);
-    --popover-foreground: var(--text-primary);
-
-    --primary: 220 14% 14%; /* kept as HSL-compatible fallback */
+    --primary: 230 70% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 8% 46%;
+    --secondary: 175 60% 45%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 220 14% 96%;
-    --muted-foreground: 103 7% 44%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 37 83% 45%;
+    --accent: 250 70% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: var(--border);
-    --input: var(--border);
-    --ring: var(--accent);
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 230 70% 50%;
 
     --radius: 0.75rem;
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(16,24,40,0.05);
-    --shadow-md: 0 4px 6px -1px rgba(16,24,40,0.1), 0 2px 4px -2px rgba(16,24,40,0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(16,24,40,0.1), 0 4px 6px -4px rgba(16,24,40,0.1);
-    --shadow-xl: 0 20px 25px -5px rgba(16,24,40,0.1), 0 8px 10px -6px rgba(16,24,40,0.1);
-    --shadow-glow: 0 0 24px rgba(37,99,235,0.12);
-    --shadow-card: 0 4px 20px rgba(16,24,40,0.08);
+    /* Custom colors */
+    --success: 160 84% 39%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
 
-    --sidebar-background: var(--surface);
-    --sidebar-foreground: var(--text-primary);
-    --sidebar-primary: var(--accent);
-    --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: var(--surface);
-    --sidebar-accent-foreground: var(--text-primary);
-    --sidebar-border: var(--border);
-    --sidebar-ring: var(--accent);
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(230, 70%, 50%) 0%, hsl(250, 70%, 60%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(175, 60%, 45%) 0%, hsl(190, 70%, 50%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(230, 70%, 50%) 0%, hsl(175, 60%, 45%) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 14% 98%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(220 9% 46% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(220 9% 46% / 0.1), 0 2px 4px -2px hsl(220 9% 46% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(220 9% 46% / 0.1), 0 4px 6px -4px hsl(220 9% 46% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(220 9% 46% / 0.1), 0 8px 10px -6px hsl(220 9% 46% / 0.1);
+    --shadow-glow: 0 0 40px hsl(230 70% 50% / 0.2);
+    --shadow-card: 0 4px 20px hsl(220 9% 46% / 0.08);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
@@ -144,17 +148,7 @@
   }
 
   .glass {
-    @apply backdrop-blur-xl border;
-    background-color: rgba(248, 249, 250, 0.8); /* surface with alpha */
-    border-color: rgba(229, 231, 235, 0.5);
-  }
-
-  /* Force header background and text to use the minimal palette */
-  header.sticky,
-  header.bg-card,
-  header.glass {
-    background-color: var(--surface) !important;
-    color: var(--text-primary) !important;
+    @apply backdrop-blur-xl bg-card/80 border border-border/50;
   }
 
   .animate-float {
